@@ -78,29 +78,18 @@ public class RestaurantController {
                     total, 
                     orderItems
                 );
-
-                String receipt = String.format(
-                    "{ \"orderId\": \"%s\", \"paymentId\": \"%s\", \"total\": %.2f, \"timestamp\": %d }",
-                    orderId,
-                    paymentResponse.getPayment_id(),
-                    total,
-                    paymentResponse.getTimestamp()
-                );
-                return ResponseEntity.ok(receipt);
-            } else {
-                return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("{ \"message\": \"Payment failed\" }");
             }
+
+            return ResponseEntity.ok(objectMapper.writeValueAsString(paymentResponse));
 
         } catch (JsonProcessingException e) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(String.format("{ \"message\": \"%s\" }", e.getMessage()));
+                .body("{ \"message\": \"Invalid request format\" }");
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(String.format("{ \"message\": \"%s\" }", e.getMessage()));
+                .body("{ \"message\": \"An error occurred\" }");
         }
     }
 }
