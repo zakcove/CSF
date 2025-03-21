@@ -2,9 +2,7 @@
   <div class="col d-flex justify-content-between align-items-center">
     <div class="fs-1 fw-bold text-primary">Menu (${{ totalAmount.toFixed(2) }})</div>
     <div>
-      <button type="button" class="btn btn-primary" 
-              [disabled]="totalItems === 0"
-              (click)="placeOrder()">
+      <button type="button" class="btn btn-primary" [disabled]="totalItems == 0" (click)="placeOrder()">
         Place Order ({{ totalItems }})
       </button>
     </div>
@@ -21,7 +19,7 @@
       </div>
       <div class="menu-details">
         <div>Name: <span class="fw-bold">{{ item.name }}</span></div>
-        <div>Description: 
+        <div>Description:
           <span class="fst-italic">{{ item.description }}</span>
         </div>
         <div>
