@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vttp.batch5.csf.assessment.server.models.MenuItem;
+import vttp.batch5.csf.assessment.server.models.OrderItem;
 import vttp.batch5.csf.assessment.server.models.PaymentRequest;
 import vttp.batch5.csf.assessment.server.models.PaymentResponse;
 import vttp.batch5.csf.assessment.server.repositories.OrdersRepository;
@@ -26,7 +27,8 @@ public class RestaurantService {
     @Autowired
     private OrdersRepository ordersRepo;
 
-    private static final String PAYMENT_URL = "https://payment-service-production-a75a.up.railway.app/api/payment";
+    @Value("${restaurant.payment.url}")
+    private String paymentUrl;
     
     @Value("${restaurant.payment.payee}")
     private String payeeName;
@@ -58,11 +60,24 @@ public class RestaurantService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.set("X-Authenticate", username);
 
         HttpEntity<PaymentRequest> request = new HttpEntity<>(paymentRequest, headers);
         
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.postForObject(PAYMENT_URL, request, PaymentResponse.class);
+        PaymentResponse response = restTemplate.postForObject(paymentUrl, request, PaymentResponse.class);
+
+        if (response != null && response.getStatus().equals("paid")) {
+            restaurantRepo.saveOrder(orderId, response.getPayment_id(), username, total);
+            return response;
+        }
+
+        return response;
+    }
+
+    public void saveOrderToMongo(String orderId, String paymentId, String username, 
+            double total, List<OrderItem> items) {
+        ordersRepo.saveOrder(orderId, paymentId, username, total, items);
     }
 }

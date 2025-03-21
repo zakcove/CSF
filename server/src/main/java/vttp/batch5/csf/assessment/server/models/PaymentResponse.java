@@ -4,6 +4,7 @@ public class PaymentResponse {
     private String payment_id;
     private String order_id;
     private long timestamp;
+    private String status;
 
     public String getPayment_id() {
         return payment_id;
@@ -27,5 +28,13 @@ public class PaymentResponse {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

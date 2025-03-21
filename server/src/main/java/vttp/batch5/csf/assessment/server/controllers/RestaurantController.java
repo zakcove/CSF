@@ -1,6 +1,7 @@
 package vttp.batch5.csf.assessment.server.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vttp.batch5.csf.assessment.server.models.MenuItem;
+import vttp.batch5.csf.assessment.server.models.OrderItem;
 import vttp.batch5.csf.assessment.server.models.OrderRequest;
 import vttp.batch5.csf.assessment.server.models.PaymentResponse;
 import vttp.batch5.csf.assessment.server.services.RestaurantService;
@@ -57,6 +59,26 @@ public class RestaurantController {
 
             PaymentResponse paymentResponse = restaurantSvc.processPayment(
                 orderId, orderRequest.getUsername(), total);
+
+            if (paymentResponse != null && "paid".equals(paymentResponse.getStatus())) {
+                List<OrderItem> orderItems = orderRequest.getItems().stream()
+                    .map(item -> {
+                        OrderItem orderItem = new OrderItem();
+                        orderItem.setId(item.getId());
+                        orderItem.setPrice(item.getPrice());
+                        orderItem.setQuantity(item.getQuantity());
+                        return orderItem;
+                    })
+                    .collect(Collectors.toList());
+
+                restaurantSvc.saveOrderToMongo(
+                    orderId, 
+                    paymentResponse.getPayment_id(), 
+                    orderRequest.getUsername(), 
+                    total, 
+                    orderItems
+                );
+            }
 
             return ResponseEntity.ok(objectMapper.writeValueAsString(paymentResponse));
 
