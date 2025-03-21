@@ -19,6 +19,9 @@ public class RestaurantRepository {
     private static final String GET_MENU_ITEMS = 
         "SELECT * FROM menu_items ORDER BY name ASC";
 
+    private static final String VALIDATE_USER =
+        "SELECT COUNT(*) as user_count FROM customers WHERE username = ? AND password = sha2(?, 224)";
+
     // TODO: Task 2.2
     public List<MenuItem> getMenus() {
         List<MenuItem> menuItems = new ArrayList<>();
@@ -35,5 +38,13 @@ public class RestaurantRepository {
         }
         
         return menuItems;
+    }
+
+    public boolean validateUser(String username, String password) {
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(VALIDATE_USER, username, password);
+        if (rs.next()) {
+            return rs.getInt("user_count") > 0;
+        }
+        return false;
     }
 }
