@@ -1,1 +1,4 @@
 # TODO: Task 1.1
+mongoimport -d restaurant -c menus --type=json --jsonArray --file=menus.json 
+
+mongoimport --uri="mongodb+srv://<username>:<password>@cluster0.87r5q.mongodb.net/?authSource=admin" --db=restaurant --collection=menus --type=json --jsonArray --file=menus.json
