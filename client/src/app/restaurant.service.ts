@@ -1,9 +1,36 @@
-export class RestaurantService {
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
 
-  // TODO: Task 2.2
-  // You change the method's signature but not the name
-  getMenuItems() {
+interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+}
+
+interface OrderItem extends MenuItem {
+  quantity: number;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RestaurantService {
+  private apiUrl = '/api';
+  private orderItems = new BehaviorSubject<OrderItem[]>([]);
+
+  constructor(private http: HttpClient) { }
+
+  getMenuItems(): Observable<MenuItem[]> {
+    return this.http.get<MenuItem[]>(`${this.apiUrl}/menu`);
   }
 
-  // TODO: Task 3.2
+  setOrderItems(items: OrderItem[]): void {
+    this.orderItems.next(items);
+  }
+
+  getOrderItems(): Observable<OrderItem[]> {
+    return this.orderItems.asObservable();
+  }
 }
