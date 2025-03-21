@@ -1,34 +1,42 @@
-<div class="row mt-3">
-  <div class="col">
-    <div class="fs-1 fw-bold text-primary">Order Placed</div>
-    <div class="d-flex justify-content-end">
-      <button type="button" class="btn btn-secondary">Back</button>
+<div class="container">
+  <div class="row mt-3">
+    <div class="col">
+      <h2 class="mb-3">Order Placed</h2>
+      <p class="text-muted">Your order details are below</p>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-secondary" (click)="backToMenu()">Back</button>
     </div>
   </div>
-</div>
 
-<div class="row mt-2">
-  <div class="col">
-    <p> Your order details are below</p>
-    <table class="table table-striped">
-      <tbody>
-        <tr>
-          <td>Date:</td>
-          <td> <code>Friday, March 21 2025</code> </td>
-        </tr>
-        <tr>
-          <td>Order Id:</td>
-          <td> <code>abc123</code> </td>
-        </tr>
-        <tr>
-          <td>Payment Id:</td>
-          <td> <code>xyz789</code> </td>
-        </tr>
-        <tr>
-          <td>Total:</td>
-          <td> <code>$12.00</code> </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row mt-2">
+    <div class="col">
+      <div class="list-group">
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-3">Date:</div>
+            <div class="col">{{ date | date:'MMM d, y' }}</div>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-3">Order Id:</div>
+            <div class="col">{{ orderId }}</div>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-3">Payment Id:</div>
+            <div class="col">{{ paymentId }}</div>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="row">
+            <div class="col-3">Total:</div>
+            <div class="col">${{ total.toFixed(2) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
